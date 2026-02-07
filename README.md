@@ -61,7 +61,7 @@ An e-commerce backend API built with NestJS, MongoDB, and TypeScript. Features i
 
 > **Note**: This project is fully compatible with Node.js 22! See [NODE_22_COMPATIBILITY.md](NODE_22_COMPATIBILITY.md) for details.
 
-## 🛠️ Installation
+##  Installation
 
 ### 1. Clone the repository
 ```bash

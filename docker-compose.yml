@@ -34,17 +34,18 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - API_PREFIX=api/v1
-      - MONGODB_URI=mongodb+srv://sketchyanimator752:tWcFHhWeyag4ppf9@cluster5.v9zjypn.mongodb.net/e-commerce
-      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
-      - JWT_EXPIRATION=7d
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_TTL=3600
-      - THROTTLE_TTL=60
-      - THROTTLE_LIMIT=10
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - API_PREFIX=${API_PREFIX}
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_TTL=${REDIS_TTL}
+      - THROTTLE_TTL=${THROTTLE_TTL}
+      - THROTTLE_LIMIT=${THROTTLE_LIMIT}
+
     depends_on:
       - mongodb
       - redis
