@@ -79,18 +79,19 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` file with your configuration:
+Edit `.env` file with this configuration:
 ```env
-NODE_ENV=development
+# Application
+NODE_ENV=production
 PORT=3000
 API_PREFIX=api/v1
 
-MONGODB_URI=mongodb://localhost:27017/ecommerce
+MONGODB_URI=mongodb+srv://sketchyanimator752:tWcFHhWeyag4ppf9@cluster5.v9zjypn.mongodb.net/e-commerce
 
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
 JWT_EXPIRATION=7d
 
-REDIS_HOST=localhost
+REDIS_HOST=redis
 REDIS_PORT=6379
 REDIS_TTL=3600
 
