@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: ecommerce-mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: ecommerce
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ecommerce-network
+
+  redis:
+    image: redis:latest
+    container_name: ecommerce-redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecommerce-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-api
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - API_PREFIX=api/v1
+      - MONGODB_URI=mongodb+srv://sketchyanimator752:tWcFHhWeyag4ppf9@cluster5.v9zjypn.mongodb.net/e-commerce
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+      - JWT_EXPIRATION=7d
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_TTL=3600
+      - THROTTLE_TTL=60
+      - THROTTLE_LIMIT=10
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - ecommerce-network
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  ecommerce-network:
+    driver: bridge
