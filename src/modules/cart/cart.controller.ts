@@ -22,7 +22,7 @@ import {
 } from './dto/cart.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import * as currentUserInterface from 'src/common/interfaces/current-user.interface';
+import * as currentUserInterface from '../../common/interfaces/current-user.interface';
 
 @ApiTags('Cart')
 @Controller('cart')

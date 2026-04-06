@@ -1,8 +1,8 @@
 {
   "name": "e-commerce-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Cloneable NestJS e-commerce backend template with auth, catalog, cart, orders, checkout, MongoDB, and Redis.",
+  "author": "Iyanuoluwa",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

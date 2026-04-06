@@ -1,23 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import * as dotenv from 'dotenv';
+import { hash } from 'bcryptjs';
 import { connect, disconnect } from 'mongoose';
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
+
+import { ProductSchema } from '../schemas/product.schema';
+import { UserRole, UserSchema } from '../schemas/user.schema';
 
 dotenv.config();
 
-import { UserRole, UserSchema } from '../schemas/user.schema';
-import { ProductSchema } from '../schemas/product.schema';
-import { hash } from 'bcryptjs';
-
 const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce';
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce_template';
 
 async function seed() {
   try {
-    console.log('🌱 Starting database seeding...');
+    console.log('Starting database seeding...');
     await connect(MONGODB_URI);
-    console.log('✅ Connected to MongoDB');
+    console.log('Connected to MongoDB');
 
     const UserModel =
       mongoose.models.User || mongoose.model('User', UserSchema);
@@ -26,20 +26,18 @@ async function seed() {
 
     await UserModel.deleteMany({});
     await ProductModel.deleteMany({});
-    console.log('🗑️  Cleared existing data');
+    console.log('Cleared existing data');
 
-    const adminPassword: string = await hash('Admin123!', 10);
+    const adminPassword = await hash('Admin123!', 10);
     const admin = await UserModel.create({
       name: 'Admin User',
       email: 'admin@example.com',
       password: adminPassword,
       role: UserRole.ADMIN,
     });
-    console.log(
-      '👤 Created admin user: admin@example.com (password: Admin123!)',
-    );
+    console.log('Created admin user: admin@example.com (password: Admin123!)');
 
-    const userPassword: string = await hash('User123!', 10);
+    const userPassword = await hash('User123!', 10);
     const user = await UserModel.create({
       name: 'John Doe',
       email: 'user@example.com',
@@ -47,7 +45,7 @@ async function seed() {
       role: UserRole.USER,
     });
     console.log(
-      '👤 Created regular user: user@example.com (password: User123!)',
+      'Created regular user: user@example.com (password: User123!)',
       user,
     );
 
@@ -146,17 +144,17 @@ async function seed() {
     ];
 
     await ProductModel.insertMany(products);
-    console.log(`📦 Created ${products.length} sample products`);
+    console.log(`Created ${products.length} sample products`);
 
-    console.log('\n✨ Database seeding completed successfully!');
-    console.log('\n📝 Sample Credentials:');
+    console.log('\nDatabase seeding completed successfully.');
+    console.log('\nSample credentials:');
     console.log('Admin: admin@example.com / Admin123!');
     console.log('User: user@example.com / User123!');
 
     await disconnect();
-    console.log('👋 Disconnected from MongoDB');
+    console.log('Disconnected from MongoDB');
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    console.error('Error seeding database:', error);
     process.exit(1);
   }
 }

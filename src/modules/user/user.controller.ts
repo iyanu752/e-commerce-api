@@ -21,7 +21,7 @@ import { RolesGuard } from '../../common/guards/role.guard';
 import { Roles } from '../../common/decorators/roles.decorators';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole } from '../../schemas/user.schema';
-import * as currentUserInterface from 'src/common/interfaces/current-user.interface';
+import * as currentUserInterface from '../../common/interfaces/current-user.interface';
 @ApiTags('Users')
 @Controller('users')
 export class UserController {

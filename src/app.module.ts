@@ -12,6 +12,17 @@ import { CartModule } from './modules/cart/cart.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CheckoutModule } from './modules/checkout/checkout.module';
 
+function getNumberConfig(
+  configService: ConfigService,
+  key: string,
+  fallback: number,
+): number {
+  const value = configService.get<string>(key);
+  const parsed = Number(value);
+
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,7 +33,7 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+        uri: configService.getOrThrow<string>('MONGODB_URI'),
       }),
       inject: [ConfigService],
     }),
@@ -31,8 +42,8 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => [
         {
-          ttl: configService.get<number>('THROTTLE_TTL') || 60000,
-          limit: configService.get<number>('THROTTLE_LIMIT') || 10,
+          ttl: getNumberConfig(configService, 'THROTTLE_TTL', 60),
+          limit: getNumberConfig(configService, 'THROTTLE_LIMIT', 10),
         },
       ],
       inject: [ConfigService],
@@ -41,12 +52,21 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get<string>('REDIS_HOST'),
-        port: configService.get<number>('REDIS_PORT'),
-        ttl: configService.get<number>('REDIS_TTL'),
-      }),
+      useFactory: (configService: ConfigService): Record<string, unknown> => {
+        const ttl = getNumberConfig(configService, 'REDIS_TTL', 3600);
+        const redisHost = configService.get<string>('REDIS_HOST');
+
+        if (!redisHost) {
+          return { ttl };
+        }
+
+        return {
+          store: redisStore,
+          host: redisHost,
+          port: getNumberConfig(configService, 'REDIS_PORT', 6379),
+          ttl,
+        };
+      },
       inject: [ConfigService],
     }),
 

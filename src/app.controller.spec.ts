@@ -15,8 +15,12 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the API status payload', () => {
+      expect(appController.getStatus()).toEqual({
+        name: 'e-commerce-api',
+        status: 'ok',
+        docsPath: '/api/docs',
+      });
     });
   });
 });

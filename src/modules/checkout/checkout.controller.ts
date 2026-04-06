@@ -6,10 +6,15 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CheckoutService } from './checkout.service';
-import { ProcessPaymentDto, PaymentResponseDto } from './dto/checkout.dto';
+import {
+  InitializePaymentDto,
+  InitializePaymentResponseDto,
+  VerifyPaymentDto,
+  VerifyPaymentResponseDto,
+} from './dto/checkout.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import * as currentUserInterface from 'src/common/interfaces/current-user.interface';
+import * as currentUserInterface from '../../common/interfaces/current-user.interface';
 
 @ApiTags('Checkout')
 @Controller('checkout')
@@ -18,18 +23,37 @@ import * as currentUserInterface from 'src/common/interfaces/current-user.interf
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
-  @Post('payment')
-  @ApiOperation({ summary: 'Process payment (Mock)' })
+  @Post('paystack/initialize')
+  @ApiOperation({ summary: 'Initialize a Paystack payment for an order' })
+  @ApiResponse({
+    status: 201,
+    description: 'Paystack payment initialized',
+    type: InitializePaymentResponseDto,
+  })
+  async initializePayment(
+    @CurrentUser() user: currentUserInterface.CurrentUserPayload,
+    @Body() initializePaymentDto: InitializePaymentDto,
+  ) {
+    return this.checkoutService.initializePayment(
+      user.id,
+      initializePaymentDto,
+    );
+  }
+
+  @Post('paystack/verify')
+  @ApiOperation({
+    summary: 'Verify a Paystack payment reference and update the order',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Payment processed',
-    type: PaymentResponseDto,
+    description: 'Paystack payment verified',
+    type: VerifyPaymentResponseDto,
   })
-  async processPayment(
+  async verifyPayment(
     @CurrentUser() user: currentUserInterface.CurrentUserPayload,
-    @Body() processPaymentDto: ProcessPaymentDto,
+    @Body() verifyPaymentDto: VerifyPaymentDto,
   ) {
-    return this.checkoutService.processPayment(user.id, processPaymentDto);
+    return this.checkoutService.verifyPayment(user.id, verifyPaymentDto);
   }
 
   @Get('order/:orderId/status')

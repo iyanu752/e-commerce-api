@@ -1,47 +1,89 @@
-import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PaymentStatus } from '../../../schemas/order.schema';
 
 export enum PaymentMethod {
-  CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card',
-  PAYPAL = 'paypal',
-  BANK_TRANSFER = 'bank_transfer',
+  PAYSTACK = 'paystack',
 }
 
-export class ProcessPaymentDto {
+export class InitializePaymentDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  orderId: string;
+  declare orderId: string;
 
   @ApiProperty({ enum: PaymentMethod })
   @IsNotEmpty()
   @IsEnum(PaymentMethod)
-  paymentMethod: PaymentMethod;
+  declare paymentMethod: PaymentMethod;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  paymentDetails: {
-    cardNumber?: string;
-    cardHolder?: string;
-    expiryDate?: string;
-    cvv?: string;
-  };
+  @ApiPropertyOptional({
+    description: 'Optional frontend callback URL override for this payment',
+  })
+  @IsOptional()
+  @IsString()
+  callbackUrl?: string;
 }
 
-export class PaymentResponseDto {
+export class InitializePaymentResponseDto {
   @ApiProperty()
-  success: boolean;
+  declare success: boolean;
 
   @ApiProperty()
-  transactionId: string;
+  declare message: string;
 
   @ApiProperty({ enum: PaymentStatus })
-  paymentStatus: PaymentStatus;
+  declare paymentStatus: PaymentStatus;
 
   @ApiProperty()
-  message: string;
+  declare provider: string;
+
+  @ApiProperty()
+  declare authorizationUrl: string;
+
+  @ApiProperty()
+  declare accessCode: string;
+
+  @ApiProperty()
+  declare reference: string;
+
+  @ApiProperty()
+  declare transactionId: string;
+
+  @ApiProperty()
+  order: any;
+}
+
+export class VerifyPaymentDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  declare reference: string;
+
+  @ApiPropertyOptional({ enum: PaymentMethod, default: PaymentMethod.PAYSTACK })
+  @IsOptional()
+  @IsEnum(PaymentMethod)
+  paymentMethod?: PaymentMethod;
+}
+
+export class VerifyPaymentResponseDto {
+  @ApiProperty()
+  declare success: boolean;
+
+  @ApiProperty()
+  declare message: string;
+
+  @ApiProperty({ enum: PaymentStatus })
+  declare paymentStatus: PaymentStatus;
+
+  @ApiProperty()
+  declare provider: string;
+
+  @ApiProperty()
+  declare reference: string;
+
+  @ApiProperty()
+  declare transactionId: string;
 
   @ApiProperty()
   order: any;

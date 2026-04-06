@@ -1,24 +1,24 @@
-FROM node:22-alpine
-
-# Alternative: Use Node 18 LTS for production stability
-# FROM node:18-alpine
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
 COPY . .
-
-# Build the application
 RUN npm run build
 
-# Expose port
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main"]

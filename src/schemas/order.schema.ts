@@ -90,7 +90,19 @@ export class Order extends Document {
   paymentMethod: string;
 
   @Prop()
+  paymentProvider: string;
+
+  @Prop({ index: true })
+  paymentReference: string;
+
+  @Prop()
+  paymentAccessCode: string;
+
+  @Prop()
   transactionId: string;
+
+  @Prop()
+  paidAt: Date;
 
   @Prop({ type: ShippingAddressSchema, required: true })
   shippingAddress: ShippingAddress;

@@ -26,7 +26,7 @@ import { Roles } from '../../common/decorators/roles.decorators';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole } from '../../schemas/user.schema';
 import { PaginationDto } from '../../common/dto/pagination.dto';
-import * as currentUserInterface from 'src/common/interfaces/current-user.interface';
+import * as currentUserInterface from '../../common/interfaces/current-user.interface';
 
 @ApiTags('Orders')
 @Controller('orders')

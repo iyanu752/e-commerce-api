@@ -4,10 +4,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
+function getNumber(value: string | undefined, fallback: number): number {
+  const parsed = Number(value);
+
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT') || 3000;
+  const port = getNumber(configService.get<string>('PORT'), 3000);
   const apiPrefix = configService.get<string>('API_PREFIX') || 'api/v1';
   app.enableCors();
   app.setGlobalPrefix(apiPrefix);
